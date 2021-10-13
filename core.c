@@ -120,17 +120,29 @@ void	autostep(t_all *all)
 	y_pos = round100(all->plr.pos_y);
 	if (x_pos)
 	{
-		if (all->plr.action == 'r')
+		if (all->plr.dir_x == 1)
+		{
 			all->plr.pos_x += SPEED;
-		else if (all->plr.action == 'l')
+			all->plr.action = 'r';
+		}
+		else if (all->plr.dir_x == -1)
+		{
 			all->plr.pos_x -= SPEED;
+			all->plr.action = 'l';
+		}
 	}
 	else if (y_pos)
 	{
-		if (all->plr.action == 'b')
+		if (all->plr.dir_y == 1)
+		{
 			all->plr.pos_y += SPEED;
-		else if (all->plr.action == 't')
+			all->plr.action = 'b';
+		}
+		else if (all->plr.dir_y == -1)
+		{
 			all->plr.pos_y -= SPEED;
+			all->plr.action = 't';
+		}
 	}
 	else
 	{
@@ -250,7 +262,7 @@ static int     distance(t_enemy *en, float x_end, float y_end, int weight)
 void	attack(t_all *all)
 {
 	int l = -1;
-	if (all->key.f == '1' && all->plr.action == 'n')
+	if (all->key.f == '1')// && all->plr.action == 'n')
 	{
 		all->plr.action = 'a';
 		while (++l < 4)

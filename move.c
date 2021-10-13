@@ -30,8 +30,6 @@ int    movement(t_all *all)
          && !blocked(all, 'w', "1B", "1BCE"))
     {
         all->plr.pos_y -= SPEED;
-        all->plr.dir_y = -1;
-        all->plr.dir_x = 0;
         all->plr.action = 't';
         all->plr.v_move = '1';
     }
@@ -39,8 +37,6 @@ int    movement(t_all *all)
          && !blocked(all, 's', "1B", "1BCE"))
     {
         all->plr.pos_y += SPEED;
-        all->plr.dir_y = 1;
-        all->plr.dir_x = 0;
         all->plr.action = 'b';
         all->plr.v_move = '1';
     }
@@ -48,8 +44,6 @@ int    movement(t_all *all)
          && !blocked(all, 'a', "1B", "1BCE"))
     {
         all->plr.pos_x -= SPEED;
-        all->plr.dir_x = -1;
-        all->plr.dir_y = 0;
         all->plr.action = 'l';
         all->plr.h_move = '1';
     }
@@ -57,8 +51,6 @@ int    movement(t_all *all)
          && !blocked(all, 'd', "1B", "1BCE"))
     {
         all->plr.pos_x += SPEED;
-        all->plr.dir_x = 1;
-        all->plr.dir_y = 0;
         all->plr.action = 'r';
         all->plr.h_move = '1';
     }

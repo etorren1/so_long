@@ -59,6 +59,7 @@ typedef struct s_plr {
 	char		action;
 	char		h_move;
 	char		v_move;
+	char		last_dir;
 }               t_plr;
 
 typedef struct s_enemy {
@@ -113,7 +114,6 @@ typedef struct s_alltex {
 	t_tex       spear;
 	t_tex       bspear;
 	t_tex       *dead;
-	t_tex		*laststep;
 	t_tex		box;
 }	t_alltex;
 

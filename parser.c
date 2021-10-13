@@ -31,7 +31,6 @@ void	inite_params(t_all *all)
 	all->tex.bwalk = malloc(sizeof(t_tex) * 4);
 	all->tex.dieban = malloc(sizeof(t_tex) * 3);
 	all->tex.dead = malloc(sizeof(t_tex) * 8);
-	all->tex.laststep = &all->tex.bwalk[0];
 }
 
 void	make_map(t_all *all, t_list **lst, int size)
