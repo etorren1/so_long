@@ -62,6 +62,7 @@ fclean: clean
 
 re: fclean all
 
+
 norm:
 	@echo "\033[46m\033[30mLIBFT\033[0m"; \
 	cd libft; \
