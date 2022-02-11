@@ -1,4 +1,4 @@
-#include "includes/so_long.h"
+#include "../includes/so_long.h"
 
 int    blocked(t_all *all, char key, char *front_obj, char *back_obj)
 {

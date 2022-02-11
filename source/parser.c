@@ -1,14 +1,17 @@
 
-#include "includes/parser.h"
+#include "../includes/so_long.h"
 
 void	inite_params(t_all *all)
 {
+	//tmp
 	int l = -1;
 	while (++l < 4)
 	{
-	all->enem[l].action = 'n';
-	all->enem[l].going = '0';
+		all->enem[l].action = 'n';
+		all->enem[l].going = '0';
 	}
+
+
 	all->spears_count = 0;
 	all->steps = 0;
 	all->map = NULL;
@@ -24,6 +27,7 @@ void	inite_params(t_all *all)
 	all->win.ind_w = 0;
 	all->plr.dir_y = 1;
 	all->plr.dir_x = 0;
+	all->plr.hp = 5;
 	all->score = 0;
 	all->tex.lwalk = malloc(sizeof(t_tex) * 4);
 	all->tex.rwalk = malloc(sizeof(t_tex) * 4);

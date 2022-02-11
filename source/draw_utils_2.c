@@ -1,4 +1,4 @@
-#include "includes/so_long.h"
+#include "../includes/so_long.h"
 
 void	put_scale(t_all *all, int ybegin, int xbegin, int color)
 {
@@ -7,6 +7,20 @@ void	put_scale(t_all *all, int ybegin, int xbegin, int color)
 
 	ybegin -= (int)roundf(all->win.ind_h) * SCALE;
 	xbegin -= (int)roundf(all->win.ind_w) * SCALE;
+	y = ybegin - 1;
+	while (y++ < ybegin + SCALE)
+	{
+		x = xbegin - 1;
+		while (x++ < xbegin + SCALE)
+			my_mlx_pixel_put(&all->win, x, y, color);
+	}
+}
+
+void	put_scale_without_indent(t_all *all, int ybegin, int xbegin, int color)
+{
+	int	x;
+	int	y;
+
 	y = ybegin - 1;
 	while (y++ < ybegin + SCALE)
 	{

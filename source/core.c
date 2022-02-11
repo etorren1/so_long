@@ -1,9 +1,9 @@
 
-#include "includes/so_long.h"
+#include "../includes/so_long.h"
 
 int	key_press(int key, t_all *all)
 {
-	//printf("key = %d\n", key);
+	// printf("key = %d\n", key);
 	if (key == 13 || key == 1731 || key == 119) //119 /1731
 		all->key.w = '1';
 	if (key == 1 || key == 1753 || key == 115) //115 /1753
@@ -12,7 +12,7 @@ int	key_press(int key, t_all *all)
 		all->key.a = '1';
 	if (key == 2 || key == 1751 || key == 100) //100 /1751
 		all->key.d = '1';
-	if (key == 3)
+	if (key == 3 || key == 102)
 		all->key.f = '1';
 	if (key == 53 || key == 65307)
 		clean_exit(all, 0);
@@ -29,7 +29,7 @@ int	key_unpress(int key, t_all *all)
 		all->key.a = '0';
 	if (key == 2 || key == 1751 || key == 100) //100 /1751
 		all->key.d = '0';
-	if (key == 3)
+	if (key == 3 || key == 102)
 		all->key.f = '0';
 	return (key);
 }
@@ -209,9 +209,9 @@ static int    blocked(t_enemy *en, t_enemy ena[4], int x, int y)
 	return (0);
 }
 
-void	move_enemy(t_enemy *en, t_node *way, t_enemy ena[4])
+void	move_enemy(t_enemy *en, t_node *way, t_enemy ena[4], t_plr *plr)
 {
-	if (way)
+	if (way && en->action != 'a')
 	{
 		if (en->going == '0')
 		{
@@ -240,6 +240,22 @@ void	move_enemy(t_enemy *en, t_node *way, t_enemy ena[4])
 			en->pos_y += 0.04;
 		if (!round100(en->pos_y) && !round100(en->pos_x) && en->going == '1')
 		{
+			en->dir_x = 0;
+			en->dir_y = 0;
+			if (roundf(en->pos_y) == roundf(plr->pos_y))
+			{
+				if (en->pos_x < plr->pos_x)
+					en->dir_x = 1;
+				else if (en->pos_x > plr->pos_x)
+					en->dir_x = -1;
+			}
+			else if (roundf(en->pos_x) == roundf(plr->pos_x))
+			{
+				if (en->pos_y < plr->pos_y)
+					en->dir_y = 1;
+				else if (en->pos_y > plr->pos_y)
+					en->dir_y = -1;
+			}
 			en->going = '0';
 			en->pos_y = roundf(en->pos_y);
 			en->pos_x = roundf(en->pos_x);
@@ -247,60 +263,79 @@ void	move_enemy(t_enemy *en, t_node *way, t_enemy ena[4])
 	}
 }
 
-static int     distance(t_enemy *en, float x_end, float y_end, int weight)
+static int	plr_distance(t_plr *plr, float x2, float y2, float dist)
 {
-    if (x_end < en->pos_x || en->pos_y > y_end)
-    {
-        if (weight > 0)
-            return (1); 
-    }
-    else if (weight > 1)
-        return (1);
-    return (0);
+	if (plr->pos_y == y2)
+	{
+		if (plr->dir_x == -1)
+			if (x2 > plr->pos_x - dist && x2 < plr->pos_x)
+				return (1);
+		if (plr->dir_x == 1)
+			if (x2 > plr->pos_x && x2 < plr->pos_x + dist)
+				return (1);
+	}
+	if (plr->pos_x == x2)
+	{
+		if (plr->dir_y == -1)
+			if (y2 > plr->pos_y - dist && y2 < plr->pos_y)
+				return (1);
+		if (plr->dir_y == 1)
+			if (y2 > plr->pos_y && y2 < plr->pos_y + dist)
+				return (1);
+	}
+	return (0);
+}
+
+static int	en_distance(t_enemy *en, float x2, float y2, float dist)
+{
+	if (en->pos_y == y2)
+	{
+		if (en->dir_x == -1)
+			if (x2 > en->pos_x - dist && x2 < en->pos_x)
+				return (1);
+		if (en->dir_x == 1)
+			if (x2 > en->pos_x && x2 < en->pos_x + dist)
+				return (1);
+	}
+	if (en->pos_x == x2)
+	{
+		if (en->dir_y == -1)
+			if (y2 > en->pos_y - dist && y2 < en->pos_y)
+				return (1);
+		if (en->dir_y == 1)
+			if (y2 > en->pos_y && y2 < en->pos_y + dist)
+				return (1);
+	}
+	return (0);
 }
 
 void	attack(t_all *all)
 {
 	int l = -1;
-	if (all->key.f == '1')// && all->plr.action == 'n')
+	if (all->key.f == '1' && all->plr.action != 'a')
 	{
 		all->plr.action = 'a';
 		while (++l < 4)
 		{
-			if (all->plr.dir_x == -1)
+			if (plr_distance(&all->plr, all->enem[l].pos_x, all->enem[l].pos_y, 2.3))
 			{
-				if (all->enem[l].pos_y == all->plr.pos_y && (all->enem[l].pos_x > all->plr.pos_x - 1.3 && all->enem[l].pos_x < all->plr.pos_x))
-				{
-					all->enem[l].action = 'd';
-					all->enem[l].going = '2';
-				}
-			}
-			else if (all->plr.dir_x == 1)
-			{
-				if (all->enem[l].pos_y == all->plr.pos_y && (all->enem[l].pos_x > all->plr.pos_x && all->enem[l].pos_x < all->plr.pos_x + 1.3))
-				{
-					all->enem[l].action = 'd';
-					all->enem[l].going = '2';
-				}
-			}
-			else if (all->plr.dir_y == -1)
-			{
-				if (all->enem[l].pos_x == all->plr.pos_x && (all->enem[l].pos_y > all->plr.pos_y - 1.3 && all->enem[l].pos_y < all->plr.pos_y))
-				{
-					all->enem[l].action = 'd';
-					all->enem[l].going = '2';
-				}
-			}
-			else if (all->plr.dir_y == 1)
-			{
-				if (all->enem[l].pos_x == all->plr.pos_x && (all->enem[l].pos_y > all->plr.pos_y && all->enem[l].pos_y < all->plr.pos_y + 1.3))
-				{
-					all->enem[l].action = 'd';
-					all->enem[l].going = '2';
-				}
+				all->enem[l].action = 'd';
+				all->enem[l].going = '2';
 			}
 		}
-		
+	}
+}
+
+
+void attack_enemy(t_plr *plr, t_enemy *en)
+{
+	if (en->action != 'a' && en->action != 'd')
+	{
+		if (en_distance(en, plr->pos_x, plr->pos_y, 1.4))
+		{
+			en->action = 'a';
+			plr->hp--;
+		}
 	}
 }
 
@@ -319,7 +354,7 @@ int	core(t_all *all)
 	timer = (current_time - all->start_time) / CLOCKS_PER_SEC;
 	// ### end_timer ### //
 
-	if (timer % 1 == 0 && timer != all->oldtime)
+	if (timer % 2 == 0 && timer != all->oldtime)
 	{
 		printf("%d | plr_x = %f | plr_y = %f | dir_x = %d | dir_y = %d\n", timer, all->plr.pos_x, all->plr.pos_y, all->plr.dir_x, all->plr.dir_y);
 		all->oldtime = timer;
@@ -332,7 +367,8 @@ int	core(t_all *all)
 	while (++l < 4)
 	{
 		pathfind(all->map, &all->enem[l], all->plr.pos_x, all->plr.pos_y);
-		move_enemy(&all->enem[l], all->enem[l].way, all->enem);
+		move_enemy(&all->enem[l], all->enem[l].way, all->enem, &all->plr);
+		attack_enemy(&all->plr, &all->enem[l]);
 	}
 	steps(all->plr.pos_x, all->plr.pos_y, &all->steps, all->plr.action);
 	take_coin(all);

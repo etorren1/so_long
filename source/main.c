@@ -1,5 +1,5 @@
 
-#include "includes/so_long.h"
+#include "../includes/so_long.h"
 
 static int	check_args(int ac, char **av)
 {
@@ -31,14 +31,15 @@ void	get_cam_pos(t_all *all)
 	int	res_w;
 	int	res_h;
 
-	my_get_screen_size(&res_w, &res_h); // macOS
+	//my_get_screen_size(&res_w, &res_h); // macOS
 	//mlx_get_screen_size(all->win.mlx, &res_w, &res_h); // linux
+	
 	if (res_w < all->win.w)
 		all->win.w = res_w - (res_w % SCALE);
 	if (res_h < all->win.h)
 		all->win.h = res_h - (res_h % SCALE);
-	all->win.w = 880 - 880 % SCALE;
-	all->win.h = 880 - 880 % SCALE;
+	all->win.w = 800 - 800 % SCALE;
+	all->win.h = 600 - 600 % SCALE;
 	printf("res_w=%d res_h=%d\n", all->win.w, all->win.h);
 	if (all->plr.pos_y > all->win.h / SCALE / 2)
 		all->win.ind_h = all->plr.pos_y - all->win.h / SCALE / 2;
@@ -48,15 +49,20 @@ void	get_cam_pos(t_all *all)
 
 void	new_window(t_all *all)
 {
-	all->win.mlx = mlx_init();
 	get_cam_pos(all);
+	all->win.mlx = mlx_init();
+	// if (!all->win.mlx)
+	// {
+	// 	printf("mlx_init error\n");
+	// 	exit(1);
+	// }
 	all->win.win = mlx_new_window(all->win.mlx, all->win.w,
 			 all->win.h, "rougelike");
 	all->win.img = mlx_new_image(all->win.mlx, all->win.w,
 			 all->win.h);
 	all->win.addr = mlx_get_data_addr(all->win.img, &all->win.bits_per_pixel,
 			 &all->win.line_length, &all->win.endian);
-	get_texturies(all);
+	get_textures(all);
 	new_img(all);
 }
 

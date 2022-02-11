@@ -1,5 +1,5 @@
 
-#include "includes/parser.h"
+#include "../includes/so_long.h"
 
 int	cases(int i, int j, char **map, int size)
 {

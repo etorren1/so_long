@@ -1,5 +1,5 @@
 
-#include "includes/so_long.h"
+#include "../includes/so_long.h"
 
 static void	cases(t_all *all, int y, int x)
 {
@@ -35,6 +35,17 @@ static void draw_direction(t_all *all, float y, float x)
 		put_texture(all, &all->tex.lwalk[1], y * SCALE, x * SCALE);
 }
 
+static void draw_direction_en(t_all *all, t_enemy *en, float y, float x)
+{
+	if (en->dir_y == 1)
+		put_texture(all, &all->tex.bwalk[1], y * SCALE, x * SCALE);
+	else if (en->dir_y == -1)
+		put_texture(all, &all->tex.twalk[1], y * SCALE, x * SCALE);
+	else if (en->dir_x == 1)
+		put_texture(all, &all->tex.rwalk[1], y * SCALE, x * SCALE);
+	else if (en->dir_x == -1)
+		put_texture(all, &all->tex.lwalk[1], y * SCALE, x * SCALE);
+}
 
 static void	events(t_all *all, float y, float x, int i)
 {
@@ -75,32 +86,54 @@ static void	events(t_all *all, float y, float x, int i)
 		put_texture(all, &all->tex.box, all->obj.pos_y * SCALE, all->obj.pos_x * SCALE);
 }
 
-static void	events_en(t_all *all, float y, float x, int i, int l)
+static void	events_en(t_all *all, t_enemy *en)
 {
-	if (all->enem[l].action == 'l')
+	int i = en->steps % 4;
+
+	if (en->action == 'l')
 	{
-		put_texture(all, &all->tex.lwalk[i], y * SCALE, x * SCALE);
-		all->enem[l].laststep = &all->tex.lwalk[1];
+		put_texture(all, &all->tex.lwalk[i], en->pos_y * SCALE, en->pos_x * SCALE);
+		en->laststep = &all->tex.lwalk[1];
 	}
-	else if (all->enem[l].action == 'r')
+	else if (en->action == 'r')
 	{
-		put_texture(all, &all->tex.rwalk[i], y * SCALE, x * SCALE);
-		all->enem[l].laststep = &all->tex.rwalk[1];
+		put_texture(all, &all->tex.rwalk[i], en->pos_y * SCALE, en->pos_x * SCALE);
+		en->laststep = &all->tex.rwalk[1];
 	}
-	else if (all->enem[l].action == 't')
+	else if (en->action == 't')
 	{
-		put_texture(all, &all->tex.twalk[i], y * SCALE, x * SCALE);
-		all->enem[l].laststep = &all->tex.twalk[1];
+		put_texture(all, &all->tex.twalk[i], en->pos_y * SCALE, en->pos_x * SCALE);
+		en->laststep = &all->tex.twalk[1];
 	}
-	else if (all->enem[l].action == 'b')
+	else if (en->action == 'b')
 	{
-		put_texture(all, &all->tex.bwalk[i], y * SCALE, x * SCALE);
-		all->enem[l].laststep = &all->tex.bwalk[1];
+		put_texture(all, &all->tex.bwalk[i], en->pos_y * SCALE, en->pos_x * SCALE);
+		en->laststep = &all->tex.bwalk[1];
 	}
-	else if (all->enem[l].action == 'n')
-		put_texture(all, all->enem[l].laststep, y * SCALE, x * SCALE);
-	else if (all->enem[l].action == 'd')
-		put_texture(all, &all->tex.dead[3], y * SCALE, x * SCALE);
+	else if (en->action == 'n')
+		put_texture(all, en->laststep, en->pos_y * SCALE, en->pos_x * SCALE);
+		//draw_direction_en(all, en, en->pos_y, en->pos_x);
+	else if (en->action == 'd')
+		put_texture(all, &all->tex.dead[3], en->pos_y * SCALE, en->pos_x * SCALE);
+	else if (en->action == 'a')
+	{
+		put_texture(all, &all->tex.dead[(int)en->atime], en->pos_y * SCALE, en->pos_x * SCALE);
+		//put_scale(all , all->enem[l].pos_y * SCALE, all->enem[l].pos_x * SCALE, 0x2b2b2b2 + all->enem[l].atime);
+		en->atime += 0.15;
+		if ((int)en->atime == 7)
+		{
+			if (en->dir_x == 1)
+				en->action = 'r';
+			else if (en->dir_x == -1)
+				en->action = 'l';
+			else if (en->dir_y == -1)
+				en->action = 't';
+			else if (en->dir_y == 1)
+				en->action = 'b';
+			en->atime = 0.0;
+			en->going = '1';
+		}
+	}
 }
 
 void	draw_back(t_all *all)
@@ -138,20 +171,22 @@ void	draw_back(t_all *all)
 	/// enemy
 	
 	int l = -1;
-	while (++l < 4) {
-	i = all->enem[l].steps % 4;
-	if ((int)all->enem[l].pos_y >= all->win.ind_h && (int)all->enem[l].pos_y < all->win.ind_h + all->win.h / SCALE - 1
-		 && (int)all->enem[l].pos_x >= all->win.ind_w && (int)all->enem[l].pos_x < all->win.ind_w + all->win.w / SCALE - 1)
+	while (++l < 4) 
 	{
-		if (i == 0)
-			events_en(all, all->enem[l].pos_y, all->enem[l].pos_x, i, l);
-		else if (i == 1)
-			events_en(all, all->enem[l].pos_y, all->enem[l].pos_x, i, l);
-		else if (i == 2)
-			events_en(all, all->enem[l].pos_y, all->enem[l].pos_x, i, l);
-		else
-			events_en(all, all->enem[l].pos_y, all->enem[l].pos_x, i, l);
-	}
+		// i = all->enem[l].steps % 4;
+		if ((int)all->enem[l].pos_y >= all->win.ind_h && (int)all->enem[l].pos_y < all->win.ind_h + all->win.h / SCALE - 1
+			&& (int)all->enem[l].pos_x >= all->win.ind_w && (int)all->enem[l].pos_x < all->win.ind_w + all->win.w / SCALE - 1)
+			events_en(all, &all->enem[l]);
+		// {
+		// 	if (i == 0)
+		// 		events_en(all, all->enem[l].pos_y, all->enem[l].pos_x, i, l);
+		// 	else if (i == 1)
+		// 		events_en(all, all->enem[l].pos_y, all->enem[l].pos_x, i, l);
+		// 	else if (i == 2)
+		// 		events_en(all, all->enem[l].pos_y, all->enem[l].pos_x, i, l);
+		// 	else
+		// 		events_en(all, all->enem[l].pos_y, all->enem[l].pos_x, i, l);
+		// }
 	}
 	/// !
 	// draw events
@@ -167,5 +202,15 @@ void	draw_back(t_all *all)
 			if (ft_strchr("B", all->map[y][x]))
 				put_texture(all, &all->tex.box, y * SCALE, x * SCALE);
 		}
+	}
+
+	// draw interface
+	int ind = 0;
+	i = 0;
+	while (i < all->plr.hp)
+	{
+		put_scale_without_indent(all, all->win.h - SCALE - 10, 10 + ind, 0xFF0000);
+		ind += SCALE + 5;
+		i++;
 	}
 }

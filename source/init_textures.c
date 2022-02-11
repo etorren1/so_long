@@ -1,5 +1,5 @@
 
-#include "includes/so_long.h"
+#include "../includes/so_long.h"
 
 t_tex	new_texture(t_all *all, t_win *win, char *path)
 {
@@ -13,7 +13,7 @@ t_tex	new_texture(t_all *all, t_win *win, char *path)
 	return (tex);
 }
 
-void	get_texturies(t_all *all)
+void	get_textures(t_all *all)
 {
 	all->tex.topwall = new_texture(all, &all->win, "./pics/topwalldarker.xpm");
 	all->tex.sidewall = new_texture(all, &all->win, "./pics/sidewall.xpm");

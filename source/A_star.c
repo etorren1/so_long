@@ -1,4 +1,4 @@
-#include "includes/so_long.h"
+#include "../includes/so_long.h"
 
 // typedef struct s_pos
 // {
@@ -205,7 +205,8 @@ t_node    *pathfind(char **map, t_enemy *en, float x_end, float y_end)
     current->x = (int)en->pos_x;
     current->y = (int)en->pos_y;
     current->weight = ft_heurestic(current, end);
-    if (map[end->y][end->x] != '1' && map[end->y][end->x] != 'B' && distance(en, x_end, y_end, current->weight) && current->weight < 25)
+    if (map[end->y][end->x] != '1' && map[end->y][end->x] != 'B' 
+     && distance(en, x_end, y_end, current->weight) && current->weight < 25)
     {
         openSet = ft_nodenew(current);
         closeSet = NULL;

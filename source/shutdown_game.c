@@ -1,5 +1,5 @@
 
-#include "includes/so_long.h"
+#include "../includes/so_long.h"
 
 void	clean_exit(t_all *all, int id)
 {
