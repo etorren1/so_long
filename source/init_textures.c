@@ -49,4 +49,21 @@ void	get_textures(t_all *all)
 	all->tex.dead[5] = new_texture(all, &all->win, "./pics/deadonspear6.xpm");
 	all->tex.dead[6] = new_texture(all, &all->win, "./pics/deadonspear7.xpm");
 	all->tex.dead[7] = new_texture(all, &all->win, "./pics/deadonspear8.xpm");
+
+	all->tex.lattack[0] = new_texture(all, &all->win, "./pics/left_attack_player_1.xpm");
+	all->tex.lattack[1] = new_texture(all, &all->win, "./pics/left_attack_player_2.xpm");
+	all->tex.lattack[2] = new_texture(all, &all->win, "./pics/left_attack_player_3.xpm");
+	all->tex.lattack[3] = new_texture(all, &all->win, "./pics/left_attack_player_4.xpm");
+	all->tex.rattack[0] = new_texture(all, &all->win, "./pics/right_attack_player_1.xpm");
+	all->tex.rattack[1] = new_texture(all, &all->win, "./pics/right_attack_player_2.xpm");
+	all->tex.rattack[2] = new_texture(all, &all->win, "./pics/right_attack_player_3.xpm");
+	all->tex.rattack[3] = new_texture(all, &all->win, "./pics/right_attack_player_4.xpm");
+	all->tex.tattack[0] = new_texture(all, &all->win, "./pics/top_attack_player_1.xpm");
+	all->tex.tattack[1] = new_texture(all, &all->win, "./pics/top_attack_player_2.xpm");
+	all->tex.tattack[2] = new_texture(all, &all->win, "./pics/top_attack_player_3.xpm");
+	all->tex.tattack[3] = new_texture(all, &all->win, "./pics/top_attack_player_4.xpm");
+	all->tex.battack[0] = new_texture(all, &all->win, "./pics/bot_attack_player_1.xpm");
+	all->tex.battack[1] = new_texture(all, &all->win, "./pics/bot_attack_player_2.xpm");
+	all->tex.battack[2] = new_texture(all, &all->win, "./pics/bot_attack_player_3.xpm");
+	all->tex.battack[3] = new_texture(all, &all->win, "./pics/bot_attack_player_4.xpm");
 }

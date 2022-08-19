@@ -23,16 +23,28 @@ static void	deadbanner(t_all *all, int y, int x)
 	put_texture(all, &all->tex.dieban[2], (y + 1) * SCALE, (x + 1) * SCALE);
 }
 
-static void draw_direction(t_all *all, float y, float x)
+static void draw_attack_plr(t_all *all, float y, float x, int i)
 {
 	if (all->plr.dir_y == 1)
-		put_texture(all, &all->tex.bwalk[1], y * SCALE, x * SCALE);
+		put_texture(all, &all->tex.battack[i], y * SCALE, x * SCALE);
 	else if (all->plr.dir_y == -1)
-		put_texture(all, &all->tex.twalk[1], y * SCALE, x * SCALE);
+		put_texture(all, &all->tex.tattack[i], y * SCALE, x * SCALE);
 	else if (all->plr.dir_x == 1)
-		put_texture(all, &all->tex.rwalk[1], y * SCALE, x * SCALE);
+		put_texture(all, &all->tex.rattack[i], y * SCALE, x * SCALE);
 	else if (all->plr.dir_x == -1)
-		put_texture(all, &all->tex.lwalk[1], y * SCALE, x * SCALE);
+		put_texture(all, &all->tex.lattack[i], y * SCALE, x * SCALE);
+}
+
+static void draw_walk_plr(t_all *all, float y, float x, int i)
+{
+	if (all->plr.dir_y == 1)
+		put_texture(all, &all->tex.bwalk[i], y * SCALE, x * SCALE);
+	else if (all->plr.dir_y == -1)
+		put_texture(all, &all->tex.twalk[i], y * SCALE, x * SCALE);
+	else if (all->plr.dir_x == 1)
+		put_texture(all, &all->tex.rwalk[i], y * SCALE, x * SCALE);
+	else if (all->plr.dir_x == -1)
+		put_texture(all, &all->tex.lwalk[i], y * SCALE, x * SCALE);
 }
 
 static void draw_direction_en(t_all *all, t_enemy *en, float y, float x)
@@ -49,15 +61,7 @@ static void draw_direction_en(t_all *all, t_enemy *en, float y, float x)
 
 static void	events(t_all *all, float y, float x, int i)
 {
-	if (all->plr.action == 'l')
-		put_texture(all, &all->tex.lwalk[i], y * SCALE, x * SCALE);
-	else if (all->plr.action == 'r')
-		put_texture(all, &all->tex.rwalk[i], y * SCALE, x * SCALE);
-	else if (all->plr.action == 't')
-		put_texture(all, &all->tex.twalk[i], y * SCALE, x * SCALE);
-	else if (all->plr.action == 'b')
-		put_texture(all, &all->tex.bwalk[i], y * SCALE, x * SCALE);
-	else if (all->plr.action == 'd')
+	if (all->plr.action == 'd')
 	{
 		put_texture(all, &all->tex.dead[(int)all->plr.dtime], y * SCALE, x * SCALE);
 		if ((int)all->plr.dtime == 7)
@@ -70,18 +74,19 @@ static void	events(t_all *all, float y, float x, int i)
 		deadbanner(all, y + 0.02, x + 0.02);
 	}
 	else if (all->plr.action == 'n')
-		draw_direction(all, y, x);
+		draw_walk_plr(all, y, x, 1);
 	else if (all->plr.action == 'a')
 	{
-		draw_direction(all, y, x);
-		put_texture(all, &all->tex.dead[(int)all->plr.atime], (y + all->plr.dir_y) * SCALE, (x + all->plr.dir_x) * SCALE);
-		all->plr.atime += 0.15;
-		if ((int)all->plr.atime == 7)
+		draw_attack_plr(all, y, x, (int)all->plr.atime);
+		all->plr.atime += 0.25;
+		if ((int)all->plr.atime == 4)
 		{
 			all->plr.action = 'n';
 			all->plr.atime = 0.0;
 		}
 	}
+	else
+		draw_walk_plr(all, y, x, i);
 	if (all->obj.action == '1')
 		put_texture(all, &all->tex.box, all->obj.pos_y * SCALE, all->obj.pos_x * SCALE);
 }

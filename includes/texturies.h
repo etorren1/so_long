@@ -23,6 +23,10 @@ typedef struct s_alltex {
 	t_tex       *twalk;
 	t_tex       *bwalk;
 	t_tex		*dieban;
+	t_tex		*rattack;
+	t_tex		*lattack;
+	t_tex		*tattack;
+	t_tex		*battack;
     t_tex       sprite;
 	t_tex       spear;
 	t_tex       bspear;

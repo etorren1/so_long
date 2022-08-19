@@ -12,7 +12,7 @@ int	key_press(int key, t_all *all)
 		all->key.a = '1';
 	if (key == 2 || key == 1751 || key == 100) //100 /1751
 		all->key.d = '1';
-	if (key == 3 || key == 102)
+	if (key == 3 || key == 102 || key == 1729)
 		all->key.f = '1';
 	if (key == 53 || key == 65307)
 		clean_exit(all, 0);
@@ -29,7 +29,7 @@ int	key_unpress(int key, t_all *all)
 		all->key.a = '0';
 	if (key == 2 || key == 1751 || key == 100) //100 /1751
 		all->key.d = '0';
-	if (key == 3 || key == 102)
+	if (key == 3 || key == 102 || key == 1729)
 		all->key.f = '0';
 	return (key);
 }
@@ -197,20 +197,27 @@ void	movecam(t_all *all)
 
 t_node    *pathfind(char **map, t_enemy *en, float x_end, float y_end);
 
-static int    blocked(t_enemy *en, t_enemy ena[4], int x, int y)
+static int    blocked(int l, t_enemy ena[4], float x, float y)
 {
+	t_enemy *en = &ena[l];
 	int i = -1;
 	while (++i < 4)
 	{
-		//printf("%f | %f\n", ena[i].pos_x, ena[i].pos_y);
-		if ((int)en->pos_x + x == (int)ena[i].pos_x && (int)en->pos_y + y == (int)ena[i].pos_y)
-			return (1);
+		if (i != l && ena[i].action != 'd')
+		{
+			if (roundf(en->pos_x + x) == roundf(ena[i].pos_x)
+		 	 && roundf(en->pos_y + y) == roundf(ena[i].pos_y))
+			 	return (1);
+		}
 	}
 	return (0);
 }
 
-void	move_enemy(t_enemy *en, t_node *way, t_enemy ena[4], t_plr *plr)
+void	move_enemy(int i, t_enemy ena[4], t_plr *plr)
 {
+	t_enemy *en = &ena[i];
+	t_node *way = en->way;
+
 	if (way && en->action != 'a')
 	{
 		if (en->going == '0')
@@ -218,13 +225,13 @@ void	move_enemy(t_enemy *en, t_node *way, t_enemy ena[4], t_plr *plr)
 			en->going = '1';
 			en->pos1 = way->content;
 			en->pos2 = way->next->content;
-			if (en->pos1->x < en->pos2->x && !blocked(en, ena, 1, 0))
+			if (en->pos1->x < en->pos2->x && !blocked(i, ena, 1, 0) && !blocked(i, ena, 1, 1))
 				en->action = 'r';
-			else if (en->pos1->x > en->pos2->x && !blocked(en, ena, -1, 0))
+			else if (en->pos1->x > en->pos2->x && !blocked(i, ena, -1, 0) && !blocked(i, ena, -1, -1))
 				en->action = 'l';
-			else if (en->pos1->y > en->pos2->y && !blocked(en, ena, 0, -1))
+			else if (en->pos1->y > en->pos2->y && !blocked(i, ena, 0, -1) && !blocked(i, ena, 1, -1))
 				en->action = 't';
-			else if (en->pos1->y < en->pos2->y && !blocked(en, ena, 0, 1))
+			else if (en->pos1->y < en->pos2->y && !blocked(i, ena, 0, 1) && !blocked(i, ena, -1, 1))
 				en->action = 'b';
 			else
 				en->action = 'n';
@@ -312,12 +319,12 @@ static int	en_distance(t_enemy *en, float x2, float y2, float dist)
 void	attack(t_all *all)
 {
 	int l = -1;
-	if (all->key.f == '1' && all->plr.action != 'a')
+	if (all->key.f == '1' && all->plr.action != 'a' && all->obj.action != '1')
 	{
 		all->plr.action = 'a';
 		while (++l < 4)
 		{
-			if (plr_distance(&all->plr, all->enem[l].pos_x, all->enem[l].pos_y, 2.3))
+			if (plr_distance(&all->plr, all->enem[l].pos_x, all->enem[l].pos_y, 0.8))
 			{
 				all->enem[l].action = 'd';
 				all->enem[l].going = '2';
@@ -331,7 +338,7 @@ void attack_enemy(t_plr *plr, t_enemy *en)
 {
 	if (en->action != 'a' && en->action != 'd')
 	{
-		if (en_distance(en, plr->pos_x, plr->pos_y, 1.4))
+		if (en_distance(en, plr->pos_x, plr->pos_y, 0.5))
 		{
 			en->action = 'a';
 			plr->hp--;
@@ -367,7 +374,7 @@ int	core(t_all *all)
 	while (++l < 4)
 	{
 		pathfind(all->map, &all->enem[l], all->plr.pos_x, all->plr.pos_y);
-		move_enemy(&all->enem[l], all->enem[l].way, all->enem, &all->plr);
+		move_enemy(l, all->enem, &all->plr);
 		attack_enemy(&all->plr, &all->enem[l]);
 	}
 	steps(all->plr.pos_x, all->plr.pos_y, &all->steps, all->plr.action);

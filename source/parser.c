@@ -33,6 +33,10 @@ void	inite_params(t_all *all)
 	all->tex.rwalk = malloc(sizeof(t_tex) * 4);
 	all->tex.twalk = malloc(sizeof(t_tex) * 4);
 	all->tex.bwalk = malloc(sizeof(t_tex) * 4);
+	all->tex.lattack = malloc(sizeof(t_tex) * 4);
+	all->tex.rattack = malloc(sizeof(t_tex) * 4);
+	all->tex.tattack = malloc(sizeof(t_tex) * 4);
+	all->tex.battack = malloc(sizeof(t_tex) * 4);
 	all->tex.dieban = malloc(sizeof(t_tex) * 3);
 	all->tex.dead = malloc(sizeof(t_tex) * 8);
 }

@@ -47,7 +47,7 @@ $(OBJFOLDER):
 
 $(NAME): $(OBJFOLDER) $(OBJS)
 #	@$(MAKE) bonus -C ./libft
-	@gcc $(FLAGS) $(OBJS) $(LIB_PATH) -lbsd -lXext -lX11 -lm -lz -o $(NAME)
+	@gcc $(FLAGS) $(OBJS) $(LIB_PATH) -lXext -lX11 -lm -lz -o $(NAME)
 	@echo "\033[33mCompiling complete\033[0m"
 
 clean:

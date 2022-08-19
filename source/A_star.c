@@ -179,17 +179,17 @@ void    f_void(void *content)
 //          return((int)floorf(val));
 // }
 
-static int     distance(t_enemy *en, float x_end, float y_end, int weight)
-{
-    if (x_end < en->pos_x || en->pos_y > y_end)
-    {
-        if (weight > 0)
-            return (1); 
-    }
-    else if (weight > 1)
-        return (1);
-    return (0);
-}
+// static int     distance(t_enemy *en, float x_end, float y_end, int weight)
+// {
+//     if (x_end < en->pos_x || en->pos_y > y_end)
+//     {
+//         if (weight > 0)
+//             return (1); 
+//     }
+//     else if (weight > 1)
+//         return (1);
+//     return (0);
+// }
 
 t_node    *pathfind(char **map, t_enemy *en, float x_end, float y_end)
 {
@@ -205,8 +205,8 @@ t_node    *pathfind(char **map, t_enemy *en, float x_end, float y_end)
     current->x = (int)en->pos_x;
     current->y = (int)en->pos_y;
     current->weight = ft_heurestic(current, end);
-    if (map[end->y][end->x] != '1' && map[end->y][end->x] != 'B' 
-     && distance(en, x_end, y_end, current->weight) && current->weight < 25)
+    if (map[end->y][end->x] != '1' && map[end->y][end->x] != 'B'  && current->weight < 25)
+    // && distance(en, x_end, y_end, current->weight))
     {
         openSet = ft_nodenew(current);
         closeSet = NULL;
